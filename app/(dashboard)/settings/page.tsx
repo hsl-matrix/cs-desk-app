@@ -1,7 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Settings2, Users, Palette, Bell, Shield } from "lucide-react";
+import { FileText, Settings2, Users, Palette, Bell, Shield, Building2 } from "lucide-react";
 
-import { CustomerFieldDesigner } from "./customer-field-designer";
+import { CustomerFieldDesignerV2 } from "./customer-field-designer-wrapper";
+import { BrandManagement } from "./brand-management";
 
 export default function SettingsPage() {
   return (
@@ -21,6 +22,13 @@ export default function SettingsPage() {
             >
               <Users className="size-4" />
               고객정보필드
+            </TabsTrigger>
+            <TabsTrigger
+              value="brands"
+              className="group flex items-center gap-2 rounded-t-md border border-transparent px-4 py-2 text-sm font-medium text-muted-foreground/70 transition-all hover:text-muted-foreground data-[state=active]:-mb-px data-[state=active]:border-border data-[state=active]:border-b-background data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-sm"
+            >
+              <Building2 className="size-4" />
+              브랜드
             </TabsTrigger>
             <TabsTrigger
               value="general"
@@ -63,7 +71,13 @@ export default function SettingsPage() {
           value="customer-fields"
           className="flex-1 overflow-y-auto px-6 py-5"
         >
-          <CustomerFieldDesigner />
+          <CustomerFieldDesignerV2 />
+        </TabsContent>
+        <TabsContent
+          value="brands"
+          className="flex-1 overflow-y-auto px-6 py-5"
+        >
+          <BrandManagement />
         </TabsContent>
         <TabsContent
           value="general"
