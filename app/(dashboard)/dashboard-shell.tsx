@@ -3,15 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentType, ReactNode } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Bell,
+  GitBranchPlus,
   Headset,
+  History,
   Home as HomeIcon,
   LineChart,
   PhoneCall,
   Settings,
   Users,
-  UserCheck,
+  LogOut,
+  UserCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -49,8 +53,9 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { icon: HomeIcon, label: "대시보드", href: "/" },
   { icon: PhoneCall, label: "실시간 상담" },
-  { icon: UserCheck, label: "고객", href: "/customers" },
+  { icon: History, label: "상담이력", href: "/call-history" },
   { icon: Users, label: "상담원" },
+  { icon: GitBranchPlus, label: "업무이관", href: "/handoffs" },
   { icon: LineChart, label: "분석" },
   { icon: Settings, label: "설정", href: "/settings" },
 ];
@@ -163,6 +168,8 @@ interface TopBarProps {
 }
 
 function TopBar({ onNewCall }: TopBarProps) {
+  const { user, logout } = useAuth();
+
   return (
     <header className="flex h-16 items-center justify-between border-b bg-background/95 px-6">
       <div className="flex items-center gap-3">
@@ -177,6 +184,15 @@ function TopBar({ onNewCall }: TopBarProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
+        {user && (
+          <div className="flex items-center gap-2 mr-2">
+            <UserCircle className="size-5 text-muted-foreground" />
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">{user.userName}</span>
+              <span className="text-xs text-muted-foreground">{user.centerName}</span>
+            </div>
+          </div>
+        )}
         <Button variant="outline" size="sm">
           <Bell className="size-4" aria-hidden="true" />
           알림
@@ -184,6 +200,16 @@ function TopBar({ onNewCall }: TopBarProps) {
         <Button size="sm" onClick={onNewCall}>
           <PhoneCall className="size-4" aria-hidden="true" />새 상담
         </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="sm" onClick={logout}>
+              <LogOut className="size-4" aria-hidden="true" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>로그아웃</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
     </header>
   );

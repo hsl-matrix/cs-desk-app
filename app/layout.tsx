@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_KR, Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 // Noto Sans KR for Korean text - excellent readability
 const notoSansKR = Noto_Sans_KR({
@@ -32,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${notoSansKR.variable} ${inter.variable} font-sans antialiased`}
       >
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );
