@@ -11,6 +11,7 @@ import {
   PhoneCall,
   Settings,
   Users,
+  UserCheck,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ interface SidebarItem {
 const sidebarItems: SidebarItem[] = [
   { icon: HomeIcon, label: "대시보드", href: "/" },
   { icon: PhoneCall, label: "실시간 상담" },
+  { icon: UserCheck, label: "고객", href: "/customers" },
   { icon: Users, label: "상담원" },
   { icon: LineChart, label: "분석" },
   { icon: Settings, label: "설정", href: "/settings" },
@@ -107,7 +109,7 @@ function AppSidebar() {
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     asChild={!!item.href}
-                    isActive={item.href ? pathname === item.href : false}
+                    isActive={item.href ? (item.href === "/" ? pathname === "/" : pathname.startsWith(item.href)) : false}
                     className="gap-3"
                     tooltip={item.label}
                   >

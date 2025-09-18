@@ -18,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PlusCircle, GripVertical, Trash2, Plus } from "lucide-react";
+import { PlusCircle, GripVertical, Trash2, Plus, Eye } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -98,6 +98,7 @@ const SPAN_OPTIONS: { value: 1 | 2 | 3; label: string }[] = [
 ];
 
 export function CustomerFieldDesigner() {
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const [rows, setRows] = useState<DesignerRow[]>([{ id: "row-1", fields: [] }]);
   const [fieldLibrary, setFieldLibrary] = useState<FieldDefinition[]>(DEFAULT_FIELD_LIBRARY);
@@ -338,27 +339,39 @@ export function CustomerFieldDesigner() {
   const rowsForSortable = rows.map((row) => row.id);
 
   return (
-    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <FieldPalette
-          availableFieldIds={availableFieldIds}
-          fieldLibrary={fieldLibrary}
-          onAddField={handleAddFieldInline}
-          onAddCustomField={handleAddCustomField}
-        />
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">필드 구성</h3>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addRow}
-              className="gap-2"
-            >
-              <PlusCircle className="size-4" aria-hidden="true" /> 행 추가
-            </Button>
-          </div>
+    <>
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
+          <FieldPalette
+            availableFieldIds={availableFieldIds}
+            fieldLibrary={fieldLibrary}
+            onAddField={handleAddFieldInline}
+            onAddCustomField={handleAddCustomField}
+          />
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">필드 구성</h3>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsPreviewOpen(true)}
+                  className="gap-2"
+                >
+                  <Eye className="size-4" aria-hidden="true" /> 미리보기
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={addRow}
+                  className="gap-2"
+                >
+                  <PlusCircle className="size-4" aria-hidden="true" /> 행 추가
+                </Button>
+              </div>
+            </div>
           <SortableContext items={rowsForSortable} strategy={verticalListSortingStrategy}>
             <div className="space-y-3">
               {rows.map((row, index) => (
@@ -377,6 +390,77 @@ export function CustomerFieldDesigner() {
         </div>
       </div>
     </DndContext>
+
+    <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>고객정보필드 미리보기</DialogTitle>
+          <DialogDescription>
+            구성된 필드가 실제로 어떻게 표시되는지 미리 확인할 수 있습니다.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4 py-4">
+          {rows.map((row, rowIndex) => (
+            <div key={row.id} className="grid grid-cols-3 gap-3">
+              {row.fields.map((field) => {
+                const spanClass = field.span === 3 ? "col-span-3" : field.span === 2 ? "col-span-2" : "col-span-1";
+                return (
+                  <div key={field.id} className={spanClass}>
+                    <Label htmlFor={`preview-${field.id}`} className="text-sm font-medium">
+                      {field.label}
+                    </Label>
+                    {field.type === "text" && (
+                      <Input
+                        id={`preview-${field.id}`}
+                        type="text"
+                        placeholder={`${field.label} 입력`}
+                        className="mt-1"
+                      />
+                    )}
+                    {field.type === "number" && (
+                      <Input
+                        id={`preview-${field.id}`}
+                        type="number"
+                        placeholder="0"
+                        className="mt-1"
+                      />
+                    )}
+                    {field.type === "date" && (
+                      <Input
+                        id={`preview-${field.id}`}
+                        type="date"
+                        className="mt-1"
+                      />
+                    )}
+                    {field.type === "select" && (
+                      <Select>
+                        <SelectTrigger id={`preview-${field.id}`} className="mt-1">
+                          <SelectValue placeholder="선택하세요" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="option1">옵션 1</SelectItem>
+                          <SelectItem value="option2">옵션 2</SelectItem>
+                          <SelectItem value="option3">옵션 3</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+          {(rows.length === 0 || rows.every(row => row.fields.length === 0)) && (
+            <div className="text-center py-12 text-muted-foreground">
+              아직 구성된 필드가 없습니다.
+            </div>
+          )}
+        </div>
+        <DialogFooter>
+          <Button onClick={() => setIsPreviewOpen(false)}>닫기</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
 

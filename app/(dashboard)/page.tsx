@@ -22,9 +22,7 @@ import {
   Paperclip,
   Mic,
   Sparkles,
-  Phone,
   Headphones,
-  User,
 } from "lucide-react";
 
 import {
@@ -45,7 +43,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useDashboard, type DashboardTab } from "./dashboard-context";
@@ -247,7 +245,7 @@ function ContentGrid({ tab }: { tab: DashboardTab }) {
             defaultSize={60}
             className="flex min-w-0"
           >
-            <Card className="flex h-full w-full flex-col gap-3 overflow-hidden rounded-xl border shadow-sm">
+            <Card className="flex h-full w-full flex-col gap-3 overflow-hidden rounded-xl border-0 shadow-sm">
               <CardHeader className="gap-2">
                 <CardTitle>{tab.title} – Main</CardTitle>
                 <CardDescription>
@@ -266,7 +264,7 @@ function ContentGrid({ tab }: { tab: DashboardTab }) {
             defaultSize={25}
             className="flex min-w-0"
           >
-            <Card className="flex h-full w-full flex-col gap-3 overflow-hidden rounded-xl border shadow-sm">
+            <Card className="flex h-full w-full flex-col gap-3 overflow-hidden rounded-xl border-0 shadow-sm">
               <CardHeader className="gap-2">
                 <CardTitle>보조 영역</CardTitle>
                 <CardDescription>
